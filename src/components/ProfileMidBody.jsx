@@ -1,30 +1,24 @@
 import { Button, Col, Image, Nav, Row, Spinner } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ProfilePostCard from "./ProfilePostCard";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "./AuthProvider";
+import { fetchPostsByUser } from "../features/posts/postSlice";
 
 export default function ProfileMidBody() {
 
     const url = "https://pbs.twimg.com/profile_banners/83072625/1602845571/1500x500";
     const pic = "https://pbs.twimg.com/profile_images/1587405892437221376/h167Jlb2_400x400.jpg";
 
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const posts = useSelector((store) => store.posts.posts);
     const loading = useSelector((store) => store.posts.loading);
     //Using useSelector, then no need to use useState anymore.
+    const { currentUser } = useContext(AuthContext);
 
-    // useEffect(() => {
-    //     const token = localStorage.getItem("authToken");
-    //     // const token = 'd21rdf3rdsdsfds'
-    //     if (token) { // if token exist
-    //         const decodedToken = jwtDecode(token);
-    //         // const decodedToken = {id:6, username: 'haris@haris.com'}
-    //         const userId = decodedToken.id;
-    //         // const userId = 6
-    //         console.log(userId)
-    //         dispatch(fetchPostsByUser(userId))
-    //         // fetchPosts(6)
-    //     }
-    // }, [dispatch]);
+    useEffect(() => {
+        dispatch(fetchPostsByUser(currentUser.uid));
+    }, [dispatch, currentUser]);
 
 
     return (
@@ -88,7 +82,7 @@ export default function ProfileMidBody() {
             {/* posts = [{id: 4, content: 'sigma school is amazing'}] */}
             {posts.map((post) => (
                 // post = {id: 4, content: 'sigma school is amazing'}
-                <ProfilePostCard key={post.id} content={post.content} />
+                <ProfilePostCard key={post.id} post={post} />
                 // <ProfilePostCard key={4} content={'sigma school is amazing'} />
             ))}
         </Col>
