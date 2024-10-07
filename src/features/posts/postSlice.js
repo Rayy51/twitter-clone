@@ -77,13 +77,19 @@ export const updatePost = createAsyncThunk(
             const postSnap = await getDoc(postRef);
             if (postSnap.exists()) {
                 const postData = postSnap.data(); //existing data of our post
+                // const postData = {content: 'hello', imageUrl: 'firebase.storage.com/photos/1', id: 1}
                 const updatedData = {
                     // if user don't want to update the text/content of the tweet, it will be empty string
                     // and empty string is a false-y boolena value
                     // and postData.content is 'hello'
                     ...postData,
+                    // ...postData will also have the other key value pair, in this case
+                    // id: 1
                     content: newPostContent || postData.content,
+                    // then it will become
+                    // content: 'hello',
                     imageUrl: newImageUrl || postData.imageUrl,
+                    // this applies to the imageUrl as well
                 };
                 await updateDoc(postRef, updatedData);
                 const updatedPost = { id: postId, ...updatedData }
